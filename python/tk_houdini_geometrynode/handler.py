@@ -40,25 +40,15 @@ class ToolkitGeometryNodeHandler(object):
             raise sgtk.TankError(msg)
 
         # Get the templates from the app
-        template = self._app.get_template("work_cache_template")
+        template = self._app.get_template("output_cache_template")
 
         # create fields dict with all the metadata
         fields = {}
         fields["name"] = work_file_fields.get("name")
+        fields["node"] = node.name()
         fields["version"] = work_file_fields["version"]
         fields["renderpass"] = node.name()
-        fields["SEQ"] = "FORMAT: $F"
-
-        # Get the camera width and height if necessary
-        if "width" in template.keys or "height" in template.keys:
-            # Get the camera
-            cam_path = node.parm("geometry1_camera").eval()
-            cam_node = hou.node(cam_path)
-            if not cam_node:
-                raise sgtk.TankError("Camera %s not found." % cam_path)
-
-            fields["width"] = cam_node.parm("resx").eval()
-            fields["height"] = cam_node.parm("resy").eval()
+        fields["HSEQ"] = "FORMAT: $F"
 
         fields.update(self._app.context.as_template_fields(template))
 
@@ -430,7 +420,7 @@ class ToolkitGeometryNodeHandler(object):
 
         # make sure we don't look for any eye - %V or SEQ - %04d stuff
         frames = self._app.tank.paths_from_template(template, fields,
-                                                    ["SEQ", "eye"])
+                                                    ["HSEQ", "eye"])
         return frames
 
     def __copy_parm_values(self, source_node, target_node, exclude=None):
