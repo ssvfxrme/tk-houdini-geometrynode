@@ -31,13 +31,14 @@ configuration:
         description: >
             A reference to a template which locates a Houdini work file on disk.
             This is used to drive the version and optionally the name of output files.
-        required_fields: [version]
-        optional_fields: [name]
+        fields: context, version, [name], *
 
-    work_cache_template:
+    output_cache_template:
         type: template
-        required_fields: [version]
-        optional_fields: [name,node]
+        description: >
+            A reference to a template which defines where the
+            alembic cache will be written to disk. 
+        fields: context, version, [name], *
 
 
 # the Shotgun fields that this app needs in order to operate correctly
