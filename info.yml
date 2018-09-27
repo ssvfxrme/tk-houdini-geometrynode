@@ -13,11 +13,6 @@
 
 # expected fields in the configuration file for this app
 configuration:
-    name:
-        type: str
-        description: >
-            A human readable name to display in the HDA to allow selection of this
-            set of configuration options in Houdini.
 
     default_node_name:
         type: str
