@@ -42,13 +42,48 @@ class ToolkitGeometryNodeHandler(object):
         # Get the templates from the app
         template = self._app.get_template("output_cache_template")
 
+        # get the Step name field for the templated Mantra Output
+        entity_name = ""
+        asset_type = ""
+
+        try:
+            ctx = self._app.context
+            entity_name = ctx.entity['name']
+            entity_type = ctx.entity['type']
+        except:
+            msg="Could not set the Shotgun context Entity name."
+            self._app.log_debug(msg)
+            raise sgtk.TankError(msg)
         # create fields dict with all the metadata
-        fields = {}
-        fields["name"] = work_file_fields.get("name")
-        fields["node"] = node.name()
-        fields["version"] = work_file_fields["version"]
-        fields["renderpass"] = node.name()
-        fields["HSEQ"] = "FORMAT: $F"
+        fields={}
+
+        if entity_type == "Shot":
+            fields = {
+                "name": work_file_fields.get("name", None),
+                "node": node.name(),
+                "renderpass": node.name(),
+                "HSEQ": "FORMAT: $F",
+                "version": work_file_fields.get("version", None),
+                "Shot": entity_name,
+                "Step": work_file_fields.get("Step", None)
+            }
+
+        # Asset Template fields
+        if entity_type == "Asset":
+            # Set the Custom Asset Type
+            asset_type = work_file_fields.get("sg_asset_type", None)
+
+            fields = {
+                "name": work_file_fields.get("name", None),
+                "node": node.name(),
+                "renderpass": node.name(),
+                "HSEQ": "FORMAT: $F",
+                "version": work_file_fields.get("version", None),
+                "Asset": entity_name,
+                "sg_asset_type": asset_type,
+                "Step": work_file_fields.get("Step", None)
+            }
+
 
         fields.update(self._app.context.as_template_fields(template))
 
