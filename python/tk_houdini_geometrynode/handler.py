@@ -241,6 +241,26 @@ class ToolkitGeometryNodeHandler(object):
                 msg = 'Problems converting node: {0}'.format(sg_n.path())
                 self._app.log_warning(msg)
 
+    @classmethod
+    def get_all_tk_geometry_nodes(cls):
+        """
+        Returns a list of all tk-houdini-geometrynode instances in the current
+        session.
+        """
+
+        tk_node_type = ToolkitGeometryNodeHandler.SG_NODE_CLASS
+
+        # get all instances of tk geometry rop/sop nodes
+        tk_geometry_nodes = []
+        tk_geometry_nodes.extend(
+            hou.nodeType(hou.sopNodeTypeCategory(),
+                         tk_node_type).instances())
+        tk_geometry_nodes.extend(
+            hou.nodeType(hou.ropNodeTypeCategory(),
+                         tk_node_type).instances())
+
+        return tk_geometry_nodes
+
     def convert_geometry_to_sg_nodes(self):
         """
         Utility function to convert all Geometry nodes to Shotgun

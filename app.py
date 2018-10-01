@@ -34,3 +34,22 @@ class GeometryOutputNode(sgtk.platform.Application):
         from Shotgun Geometry nodes, back into Shotgun Geometry nodes.
         """
         self.handler.convert_geometry_to_sg_nodes()
+
+    def get_nodes(self):
+        """
+        Returns a list of hou.node objects for each tk alembic node.
+
+        Example usage::
+
+        >>> import sgtk
+        >>> eng = sgtk.platform.current_engine()
+        >>> app = eng.apps["tk-houdini-geometrynode"]
+        >>> tk_alembic_nodes = app.get_nodes()
+        """
+
+        self.log_debug("Retrieving tk-houdini-geometrynode nodes...")
+        tk_houdini_geometrynode = self.import_module("tk_houdini_geometrynode")
+        nodes = tk_houdini_geometrynode.ToolkitGeometryNodeHandler.\
+            get_all_tk_geometry_nodes()
+        self.log_debug("Found %s tk-houdini-geometrynode nodes." % (len(nodes),))
+        return nodes
